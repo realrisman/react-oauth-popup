@@ -8,6 +8,7 @@ type IWindowProps = {
 };
 
 type IPopupProps = IWindowProps & {
+  redirectUrl?: string;
   onClose: () => void;
   onCode: (code: string, params: URLSearchParams) => void;
   children: React.ReactNode;
@@ -32,6 +33,7 @@ const OauthPopup: React.FC<IPopupProps> = ({
   height = 500,
   url,
   children,
+  redirectUrl,
   onCode,
   onClose,
 }: IPopupProps) => {
@@ -52,7 +54,7 @@ const OauthPopup: React.FC<IPopupProps> = ({
     if (externalWindow) {
       intervalRef.current = window.setInterval(() => {
         try {
-          const currentUrl = externalWindow.location.href;
+          const currentUrl = redirectUrl ? redirectUrl : externalWindow.location.href;
           const params = new URL(currentUrl).searchParams;
           const code = params.get('code');
           if (!code) {
